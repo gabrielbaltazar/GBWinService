@@ -18,7 +18,9 @@ begin
     .OnStart(OnStartService)
     .OnStop(OnStopService)
     .OnPause(OnPauseService)
-    .OnExecute(onExecuteService);
+    .OnExecute(onExecuteService)
+    .OnCreate(OnCreateService)
+    .OnDestroy(OnDestroyService);
 
   if not WinServiceSetup.RunAsService then
     WinServiceSetup.CreateForm(TfrmMain, frmMain);

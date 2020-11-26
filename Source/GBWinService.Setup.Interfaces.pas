@@ -24,6 +24,8 @@ type
     function OnStop (Value: TOnGBWinServiceEvent) : IGBWinServiceSetup;
     function OnPause(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
     function OnExecute(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnCreate(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnDestroy(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
     function OnShutdown(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
 
     function CreateForm(Component: TComponentClass; var Reference; ReportLeaks: Boolean = True): IGBWinServiceSetup;
@@ -38,11 +40,15 @@ type
     FOnPause: TOnGBWinServiceEvent;
     FOnExecute: TOnGBWinServiceEvent;
     FOnShutdown: TOnGBWinServiceEvent;
+    FOnCreate: TOnGBWinServiceEvent;
+    FOnDestroy: TOnGBWinServiceEvent;
 
     procedure OnServiceStart(Service: TService; var Started: Boolean);
     procedure OnServiceStop (Service: TService; var Stopped: Boolean);
     procedure OnServicePause(Sender: TService; var Paused: Boolean);
     procedure OnServiceExecute(Sender: TService);
+    procedure OnServiceCreate(Sender: TObject);
+    procedure OnServiceDestroy(Sender: TObject);
     procedure OnServiceShutdown(Sender: TService);
 
   protected
@@ -54,6 +60,8 @@ type
     function OnStop (Value: TOnGBWinServiceEvent) : IGBWinServiceSetup;
     function OnPause(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
     function OnExecute(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnCreate(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnDestroy(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
     function OnShutdown(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
 
     function CreateForm(Component: TComponentClass; var Reference; ReportLeaks: Boolean = True): IGBWinServiceSetup;
@@ -119,6 +127,18 @@ begin
   result := Self.Create;
 end;
 
+function TGBWinServiceSetup.OnCreate(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+begin
+  result := Self;
+  FOnCreate := Value;
+end;
+
+function TGBWinServiceSetup.OnDestroy(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+begin
+  result := Self;
+  FOnDestroy := Value;
+end;
+
 function TGBWinServiceSetup.OnExecute(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
 begin
   Result := Self;
@@ -129,6 +149,18 @@ function TGBWinServiceSetup.OnPause(Value: TOnGBWinServiceEvent): IGBWinServiceS
 begin
   Result := Self;
   FOnPause := Value;
+end;
+
+procedure TGBWinServiceSetup.OnServiceCreate(Sender: TObject);
+begin
+  if Assigned(FOnCreate) then
+    FOnCreate;
+end;
+
+procedure TGBWinServiceSetup.OnServiceDestroy(Sender: TObject);
+begin
+  if Assigned(FOnDestroy) then
+    FOnDestroy;
 end;
 
 procedure TGBWinServiceSetup.OnServiceExecute(Sender: TService);
@@ -195,6 +227,8 @@ begin
     if Assigned(FOnStop)  then GBWinServiceApp.OnStop  := OnServiceStop;
     if Assigned(FOnPause) then GBWinServiceApp.OnPause := OnServicePause;
     if Assigned(FOnShutdown) then GBWinServiceApp.OnShutdown := OnServiceShutdown;
+    if Assigned(FOnCreate) then GBWinServiceApp.OnCreate := OnServiceCreate;
+    if Assigned(FOnDestroy) then GBWinServiceApp.OnDestroy := OnServiceDestroy;
     if Assigned(FOnExecute) then GBWinServiceApp.SetOnExecute( OnServiceExecute );
 
     Vcl.SvcMgr.Application.Run;

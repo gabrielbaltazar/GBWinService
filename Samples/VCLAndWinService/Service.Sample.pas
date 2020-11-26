@@ -11,11 +11,23 @@ procedure OnStopService;
 procedure OnPauseService;
 procedure OnExecuteService;
 procedure OnShutdownService;
+procedure OnCreateService;
+procedure OnDestroyService;
 
 function FileLogName: string;
 procedure WriteLog(ALog: String);
 
 implementation
+
+procedure OnCreateService;
+begin
+  WriteLog('Service Created');
+end;
+
+procedure OnDestroyService;
+begin
+  WriteLog('Service Destroy');
+end;
 
 procedure OnStartService;
 begin
