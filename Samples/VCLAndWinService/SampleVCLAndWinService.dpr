@@ -23,7 +23,9 @@ begin
     .OnDestroy(OnDestroyService)
     .OnContinue(OnContinueService)
     .OnBeforeUninstall(OnBeforeUninstallService)
-    .OnBeforeInstall(OnBeforeInstallService);
+    .OnBeforeInstall(OnBeforeInstallService)
+    .OnAfterInstall(OnAfterInstallService)
+    .OnAfterUninstall(OnAfterUninstallService);
 
   if not WinServiceSetup.RunAsService then
     WinServiceSetup.CreateForm(TfrmMain, frmMain);

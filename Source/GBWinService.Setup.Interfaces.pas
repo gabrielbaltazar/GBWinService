@@ -30,6 +30,8 @@ type
     function OnShutdown(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
     function OnBeforeUninstall(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
     function OnBeforeInstall(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnAfterInstall(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnAfterUninstall(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
 
     function CreateForm(Component: TComponentClass; var Reference; ReportLeaks: Boolean = True): IGBWinServiceSetup;
 
@@ -48,6 +50,8 @@ type
     FOnContinue: TOnGBWinServiceEvent;
     FOnBeforeInstall: TOnGBWinServiceEvent;
     FOnBeforeUninstall: TOnGBWinServiceEvent;
+    FOnAfterInstall: TOnGBWinServiceEvent;
+    FOnAfterUninstall: TOnGBWinServiceEvent;
 
     procedure OnServiceStart(Service: TService; var Started: Boolean);
     procedure OnServiceStop (Service: TService; var Stopped: Boolean);
@@ -59,6 +63,8 @@ type
     procedure OnServiceContinue(Sender: TService; var Continued: Boolean);
     procedure OnServiceBeforeInstall(Sender: TService);
     procedure OnServiceBeforeUninstall(Sender: TService);
+    procedure OnServiceAfterInstall(Sender: TService);
+    procedure OnServiceAfterUninstall(Sender: TService);
 
   protected
     function ServiceName  (Value: String): IGBWinServiceSetup;
@@ -75,6 +81,8 @@ type
     function OnShutdown(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
     function OnBeforeUninstall(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
     function OnBeforeInstall(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnAfterInstall(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnAfterUninstall(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
 
     function CreateForm(Component: TComponentClass; var Reference; ReportLeaks: Boolean = True): IGBWinServiceSetup;
 
@@ -139,10 +147,34 @@ begin
   result := Self.Create;
 end;
 
+function TGBWinServiceSetup.OnAfterInstall(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+begin
+  result := Self;
+  FOnAfterInstall := Value;
+end;
+
+function TGBWinServiceSetup.OnAfterUninstall(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+begin
+  result := Self;
+  FOnAfterUninstall := Value;
+end;
+
 function TGBWinServiceSetup.OnBeforeInstall(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
 begin
   result := Self;
   FOnBeforeInstall := Value;
+end;
+
+procedure TGBWinServiceSetup.OnServiceAfterInstall(Sender: TService);
+begin
+  if Assigned(FOnAfterInstall) then
+    FOnAfterInstall;
+end;
+
+procedure TGBWinServiceSetup.OnServiceAfterUninstall(Sender: TService);
+begin
+  if Assigned(FOnAfterUninstall) then
+    FOnAfterUninstall;
 end;
 
 procedure TGBWinServiceSetup.OnServiceBeforeInstall(Sender: TService);
@@ -280,6 +312,8 @@ begin
     if Assigned(FOnContinue) then GBWinServiceApp.OnContinue := OnServiceContinue;
     if Assigned(FOnBeforeInstall) then GBWinServiceApp.BeforeInstall := OnServiceBeforeInstall;
     if Assigned(FOnBeforeUninstall) then GBWinServiceApp.BeforeUninstall := OnServiceBeforeUninstall;
+    if Assigned(FOnAfterUninstall) then GBWinServiceApp.AfterUninstall := OnServiceAfterUninstall;
+    if Assigned(FOnAfterInstall) then GBWinServiceApp.SetOnAfterInstall( OnServiceAfterInstall );
     if Assigned(FOnExecute) then GBWinServiceApp.SetOnExecute( OnServiceExecute );
 
     Vcl.SvcMgr.Application.Run;

@@ -32,11 +32,13 @@ uses
 procedure TfrmMain.btnInstallServiceClick(Sender: TObject);
 begin
   InstallService;
+  ShowMessage('Service Installed');
 end;
 
 procedure TfrmMain.btnUninstallServiceClick(Sender: TObject);
 begin
   UninstallService;
+  ShowMessage('Service Uninstalled');
 end;
 
 end.
