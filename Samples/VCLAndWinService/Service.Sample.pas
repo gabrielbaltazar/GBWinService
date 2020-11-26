@@ -8,6 +8,8 @@ uses
 
 procedure OnStartService;
 procedure OnStopService;
+procedure OnPauseService;
+procedure OnExecuteService;
 
 function FileLogName: string;
 procedure WriteLog(ALog: String);
@@ -22,6 +24,16 @@ end;
 procedure OnStopService;
 begin
   WriteLog('Service Stopped');
+end;
+
+procedure OnPauseService;
+begin
+  WriteLog('Service Paused');
+end;
+
+procedure OnExecuteService;
+begin
+  WriteLog('Service Execute');
 end;
 
 function FileLogName: string;

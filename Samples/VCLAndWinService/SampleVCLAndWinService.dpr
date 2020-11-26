@@ -16,7 +16,9 @@ begin
     .ServiceTitle('Sample VCL')
     .ServiceDetail('Test Service')
     .OnStart(OnStartService)
-    .OnStop(OnStopService);
+    .OnStop(OnStopService)
+    .OnPause(OnPauseService)
+    .OnExecute(onExecuteService);
 
   if not WinServiceSetup.RunAsService then
     WinServiceSetup.CreateForm(TfrmMain, frmMain);

@@ -12,8 +12,7 @@ uses
   Winapi.WinSvc;
 
 type
-  TOnGBWinServiceStart = reference to procedure;
-  TOnGBWinServiceStop  = reference to procedure;
+  TOnGBWinServiceEvent = reference to procedure;
 
   IGBWinServiceSetup = interface
     ['{28B8F3A1-8491-4695-8F4C-97B292E0CCF1}']
@@ -21,8 +20,10 @@ type
     function ServiceTitle (Value: string): IGBWinServiceSetup;
     function ServiceDetail(Value: String): IGBWinServiceSetup;
 
-    function OnStart(Value: TOnGBWinServiceStart): IGBWinServiceSetup;
-    function OnStop (Value: TOnGBWinServiceStop) : IGBWinServiceSetup;
+    function OnStart(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnStop (Value: TOnGBWinServiceEvent) : IGBWinServiceSetup;
+    function OnPause(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnExecute(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
 
     function CreateForm(Component: TComponentClass; var Reference; ReportLeaks: Boolean = True): IGBWinServiceSetup;
 
@@ -31,19 +32,25 @@ type
 
   TGBWinServiceSetup = class(TInterfacedObject, IGBWinServiceSetup)
   private
-    FOnStart: TOnGBWinServiceStart;
-    FOnStop : TOnGBWinServiceStop;
+    FOnStart: TOnGBWinServiceEvent;
+    FOnStop : TOnGBWinServiceEvent;
+    FOnPause: TOnGBWinServiceEvent;
+    FOnExecute: TOnGBWinServiceEvent;
 
     procedure OnServiceStart(Service: TService; var Started: Boolean);
     procedure OnServiceStop (Service: TService; var Stopped: Boolean);
+    procedure OnServicePause(Sender: TService; var Paused: Boolean);
+    procedure OnServiceExecute(Sender: TService);
 
   protected
     function ServiceName  (Value: String): IGBWinServiceSetup;
     function ServiceTitle (Value: string): IGBWinServiceSetup;
     function ServiceDetail(Value: String): IGBWinServiceSetup;
 
-    function OnStart(Value: TOnGBWinServiceStart): IGBWinServiceSetup;
-    function OnStop (Value: TOnGBWinServiceStop) : IGBWinServiceSetup;
+    function OnStart(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnStop (Value: TOnGBWinServiceEvent) : IGBWinServiceSetup;
+    function OnPause(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnExecute(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
 
     function CreateForm(Component: TComponentClass; var Reference; ReportLeaks: Boolean = True): IGBWinServiceSetup;
 
@@ -108,23 +115,49 @@ begin
   result := Self.Create;
 end;
 
+function TGBWinServiceSetup.OnExecute(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+begin
+  Result := Self;
+  FOnExecute := Value;
+end;
+
+function TGBWinServiceSetup.OnPause(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+begin
+  Result := Self;
+  FOnPause := Value;
+end;
+
+procedure TGBWinServiceSetup.OnServiceExecute(Sender: TService);
+begin
+  if Assigned(FOnExecute) then
+    FOnExecute;
+end;
+
+procedure TGBWinServiceSetup.OnServicePause(Sender: TService; var Paused: Boolean);
+begin
+  if Assigned(FOnPause) then
+    FOnPause;
+end;
+
 procedure TGBWinServiceSetup.OnServiceStart(Service: TService; var Started: Boolean);
 begin
-  FOnStart;
+  if Assigned(FOnStart) then
+    FOnStart;
 end;
 
 procedure TGBWinServiceSetup.OnServiceStop(Service: TService; var Stopped: Boolean);
 begin
-  FOnStop;
+  if Assigned(FOnStop) then
+    FOnStop;
 end;
 
-function TGBWinServiceSetup.OnStart(Value: TOnGBWinServiceStart): IGBWinServiceSetup;
+function TGBWinServiceSetup.OnStart(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
 begin
   result   := Self;
   FOnStart := Value;
 end;
 
-function TGBWinServiceSetup.OnStop(Value: TOnGBWinServiceStop): IGBWinServiceSetup;
+function TGBWinServiceSetup.OnStop(Value: TOnGBWinServiceEvent) : IGBWinServiceSetup;
 begin
   result  := Self;
   FOnStop := Value;
@@ -144,6 +177,8 @@ begin
 
     if Assigned(FOnStart) then GBWinServiceApp.OnStart := OnServiceStart;
     if Assigned(FOnStop)  then GBWinServiceApp.OnStop  := OnServiceStop;
+    if Assigned(FOnPause) then GBWinServiceApp.OnPause := OnServicePause;
+    if Assigned(FOnExecute) then GBWinServiceApp.SetOnExecute( OnServiceExecute );
 
     Vcl.SvcMgr.Application.Run;
     result := True;

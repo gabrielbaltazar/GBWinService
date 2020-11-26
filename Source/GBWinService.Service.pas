@@ -17,10 +17,14 @@ type
     procedure ServiceExecute(Sender: TService);
     procedure ServiceAfterInstall(Sender: TService);
   private
+    FOnExecute: TServiceEvent;
+
     procedure saveDetails;
     procedure saveDetailsAfterInstall;
 
   public
+    procedure SetOnExecute(Value: TServiceEvent);
+
     constructor Create(AOwner: TComponent); override;
     function GetServiceController: TServiceController; override;
     { Public declarations }
@@ -118,6 +122,14 @@ procedure TGBWinService.ServiceExecute(Sender: TService);
 begin
   while not self.Terminated do
     ServiceThread.ProcessRequests(true);
+
+  if Assigned(FOnExecute) then
+    FOnExecute(Sender);
+end;
+
+procedure TGBWinService.SetOnExecute(Value: TServiceEvent);
+begin
+  FOnExecute := Value;
 end;
 
 end.
