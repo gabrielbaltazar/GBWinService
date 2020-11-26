@@ -1,0 +1,9 @@
+{
+	"name": "GBWinService",
+	"description": "",
+	"version": "1.0.0",
+	"homepage": "",
+	"mainsrc": "Source",
+	"projects": [],
+	"dependencies": {}
+}
