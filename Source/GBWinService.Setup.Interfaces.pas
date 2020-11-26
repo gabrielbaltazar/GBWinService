@@ -24,6 +24,7 @@ type
     function OnStop (Value: TOnGBWinServiceEvent) : IGBWinServiceSetup;
     function OnPause(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
     function OnExecute(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnShutdown(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
 
     function CreateForm(Component: TComponentClass; var Reference; ReportLeaks: Boolean = True): IGBWinServiceSetup;
 
@@ -36,11 +37,13 @@ type
     FOnStop : TOnGBWinServiceEvent;
     FOnPause: TOnGBWinServiceEvent;
     FOnExecute: TOnGBWinServiceEvent;
+    FOnShutdown: TOnGBWinServiceEvent;
 
     procedure OnServiceStart(Service: TService; var Started: Boolean);
     procedure OnServiceStop (Service: TService; var Stopped: Boolean);
     procedure OnServicePause(Sender: TService; var Paused: Boolean);
     procedure OnServiceExecute(Sender: TService);
+    procedure OnServiceShutdown(Sender: TService);
 
   protected
     function ServiceName  (Value: String): IGBWinServiceSetup;
@@ -51,6 +54,7 @@ type
     function OnStop (Value: TOnGBWinServiceEvent) : IGBWinServiceSetup;
     function OnPause(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
     function OnExecute(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+    function OnShutdown(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
 
     function CreateForm(Component: TComponentClass; var Reference; ReportLeaks: Boolean = True): IGBWinServiceSetup;
 
@@ -139,6 +143,12 @@ begin
     FOnPause;
 end;
 
+procedure TGBWinServiceSetup.OnServiceShutdown(Sender: TService);
+begin
+  if Assigned(FOnShutdown) then
+    FOnShutdown;
+end;
+
 procedure TGBWinServiceSetup.OnServiceStart(Service: TService; var Started: Boolean);
 begin
   if Assigned(FOnStart) then
@@ -149,6 +159,12 @@ procedure TGBWinServiceSetup.OnServiceStop(Service: TService; var Stopped: Boole
 begin
   if Assigned(FOnStop) then
     FOnStop;
+end;
+
+function TGBWinServiceSetup.OnShutdown(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
+begin
+  result := Self;
+  FOnShutdown := Value;
 end;
 
 function TGBWinServiceSetup.OnStart(Value: TOnGBWinServiceEvent): IGBWinServiceSetup;
@@ -178,6 +194,7 @@ begin
     if Assigned(FOnStart) then GBWinServiceApp.OnStart := OnServiceStart;
     if Assigned(FOnStop)  then GBWinServiceApp.OnStop  := OnServiceStop;
     if Assigned(FOnPause) then GBWinServiceApp.OnPause := OnServicePause;
+    if Assigned(FOnShutdown) then GBWinServiceApp.OnShutdown := OnServiceShutdown;
     if Assigned(FOnExecute) then GBWinServiceApp.SetOnExecute( OnServiceExecute );
 
     Vcl.SvcMgr.Application.Run;

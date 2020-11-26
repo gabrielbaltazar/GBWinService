@@ -10,6 +10,7 @@ procedure OnStartService;
 procedure OnStopService;
 procedure OnPauseService;
 procedure OnExecuteService;
+procedure OnShutdownService;
 
 function FileLogName: string;
 procedure WriteLog(ALog: String);
@@ -34,6 +35,11 @@ end;
 procedure OnExecuteService;
 begin
   WriteLog('Service Execute');
+end;
+
+procedure OnShutdownService;
+begin
+  WriteLog('Service Shutdown');
 end;
 
 function FileLogName: string;
