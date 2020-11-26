@@ -1,9 +1,10 @@
 object frmMain: TfrmMain
   Left = 0
   Top = 0
+  BorderStyle = bsDialog
   Caption = 'frmMain'
-  ClientHeight = 299
-  ClientWidth = 635
+  ClientHeight = 71
+  ClientWidth = 331
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,25 +12,25 @@ object frmMain: TfrmMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnCreate = FormCreate
+  Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 13
-  object Button1: TButton
-    Left = 288
-    Top = 160
-    Width = 75
+  object btnInstallService: TButton
+    Left = 32
+    Top = 24
+    Width = 131
     Height = 25
-    Caption = 'Button1'
+    Caption = 'Install Service'
     TabOrder = 0
-    OnClick = Button1Click
+    OnClick = btnInstallServiceClick
   end
-  object Button2: TButton
-    Left = 488
-    Top = 160
-    Width = 75
+  object btnUninstallService: TButton
+    Left = 169
+    Top = 24
+    Width = 131
     Height = 25
-    Caption = 'Button1'
+    Caption = 'Uninstall Service'
     TabOrder = 1
-    OnClick = Button2Click
+    OnClick = btnUninstallServiceClick
   end
 end
