@@ -20,7 +20,10 @@ begin
     .OnPause(OnPauseService)
     .OnExecute(onExecuteService)
     .OnCreate(OnCreateService)
-    .OnDestroy(OnDestroyService);
+    .OnDestroy(OnDestroyService)
+    .OnContinue(OnContinueService)
+    .OnBeforeUninstall(OnBeforeUninstallService)
+    .OnBeforeInstall(OnBeforeInstallService);
 
   if not WinServiceSetup.RunAsService then
     WinServiceSetup.CreateForm(TfrmMain, frmMain);

@@ -13,11 +13,29 @@ procedure OnExecuteService;
 procedure OnShutdownService;
 procedure OnCreateService;
 procedure OnDestroyService;
+procedure OnContinueService;
+procedure OnBeforeInstallService;
+procedure OnBeforeUninstallService;
 
 function FileLogName: string;
 procedure WriteLog(ALog: String);
 
 implementation
+
+procedure OnBeforeInstallService;
+begin
+  WriteLog('Service Before Install');
+end;
+
+procedure OnBeforeUninstallService;
+begin
+  WriteLog('Service Before Uninstall');
+end;
+
+procedure OnContinueService;
+begin
+  WriteLog('Service Continue');
+end;
 
 procedure OnCreateService;
 begin
