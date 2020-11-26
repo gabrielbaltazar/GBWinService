@@ -5,15 +5,14 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  GBWinService.Setup.Interfaces, Vcl.StdCtrls;
+  Vcl.StdCtrls;
 
 type
   TfrmMain = class(TForm)
-    Button1: TButton;
-    Button2: TButton;
-    procedure FormCreate(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+    btnInstallService: TButton;
+    btnUninstallService: TButton;
+    procedure btnInstallServiceClick(Sender: TObject);
+    procedure btnUninstallServiceClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -27,20 +26,17 @@ implementation
 
 {$R *.dfm}
 
-procedure TfrmMain.Button1Click(Sender: TObject);
+uses
+  GBWinService.Setup.Interfaces;
+
+procedure TfrmMain.btnInstallServiceClick(Sender: TObject);
 begin
   InstallService;
 end;
 
-procedure TfrmMain.Button2Click(Sender: TObject);
+procedure TfrmMain.btnUninstallServiceClick(Sender: TObject);
 begin
   UninstallService;
-end;
-
-procedure TfrmMain.FormCreate(Sender: TObject);
-begin
-//  ShowMessage( Application.ExeName );
-  
 end;
 
 end.
