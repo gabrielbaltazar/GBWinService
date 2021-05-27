@@ -3,8 +3,8 @@ object frmMain: TfrmMain
   Top = 0
   BorderStyle = bsDialog
   Caption = 'frmMain'
-  ClientHeight = 71
-  ClientWidth = 331
+  ClientHeight = 191
+  ClientWidth = 355
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -32,5 +32,41 @@ object frmMain: TfrmMain
     Caption = 'Uninstall Service'
     TabOrder = 1
     OnClick = btnUninstallServiceClick
+  end
+  object btnStart: TButton
+    Left = 32
+    Top = 80
+    Width = 131
+    Height = 25
+    Caption = 'Start'
+    TabOrder = 2
+    OnClick = btnStartClick
+  end
+  object btnStop: TButton
+    Left = 32
+    Top = 136
+    Width = 131
+    Height = 25
+    Caption = 'Stop'
+    TabOrder = 3
+    OnClick = btnStopClick
+  end
+  object btnRestart: TButton
+    Left = 169
+    Top = 80
+    Width = 131
+    Height = 25
+    Caption = 'Restart'
+    TabOrder = 4
+    OnClick = btnRestartClick
+  end
+  object btnIsRunning: TButton
+    Left = 169
+    Top = 136
+    Width = 131
+    Height = 25
+    Caption = 'Is Running'
+    TabOrder = 5
+    OnClick = btnIsRunningClick
   end
 end

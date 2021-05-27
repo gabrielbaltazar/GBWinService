@@ -221,4 +221,9 @@ begin
   ServiceMng := Nil;
 end;
 
+initialization
+
+finalization
+  TGBWinServiceManager.FreeSingleton(EmptyStr);
+
 end.
