@@ -93,6 +93,10 @@ type
 
 function WinServiceSetup: IGBWinServiceSetup;
 
+function IsRunning: Boolean;
+procedure StartService;
+procedure StopService;
+procedure RestartService;
 procedure InstallService;
 procedure UninstallService;
 
@@ -103,6 +107,38 @@ implementation
 
 uses
   GBWinService.Model.Default;
+
+function IsRunning: Boolean;
+begin
+  result := TGBWinServiceModelDefault
+              .New
+              .ServiceName(GBWinService.Service.ServiceName)
+              .IsRunnig;
+end;
+
+procedure StartService;
+begin
+  TGBWinServiceModelDefault
+    .New
+    .ServiceName(GBWinService.Service.ServiceName)
+    .Start;
+end;
+
+procedure StopService;
+begin
+  TGBWinServiceModelDefault
+    .New
+    .ServiceName(GBWinService.Service.ServiceName)
+    .Stop;
+end;
+
+procedure RestartService;
+begin
+  TGBWinServiceModelDefault
+    .New
+    .ServiceName(GBWinService.Service.ServiceName)
+    .Restart;
+end;
 
 procedure InstallService;
 begin
